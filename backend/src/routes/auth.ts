@@ -12,6 +12,14 @@ const users = [
     email: 'admin@example.com',
     password: '$2a$10$example', // In production, hash passwords
     name: 'Admin User',
+    role: 'admin',
+  },
+  {
+    id: '2',
+    email: 'mikashif666@gmail.com',
+    password: '$2a$10$LvtNOlAER5gINXty876SZ.BwDmUKRYxYZzAnexTleKpOIpwjmFbBe', // Hashed: Ameen@5212
+    name: 'Mikashif Admin',
+    role: 'admin',
   },
 ];
 
@@ -30,8 +38,15 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    // Verify password (in production, use bcrypt.compare)
-    // For demo purposes, accept any password
+    // Verify password using bcrypt
+    // For the old demo user, accept any password; for others, verify with bcrypt
+    if (user.password !== '$2a$10$example') {
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ error: 'Invalid email or password' });
+      }
+    }
+
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
 
     res.json({
@@ -39,6 +54,7 @@ router.post('/login', async (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
+        role: user.role || 'admin',
       },
       token,
     });
@@ -70,6 +86,7 @@ router.post('/register', async (req, res) => {
       email,
       password: hashedPassword,
       name,
+      role: 'technician' as const, // Default role for new registrations
     };
     users.push(newUser);
 
@@ -80,6 +97,7 @@ router.post('/register', async (req, res) => {
         id: newUser.id,
         email: newUser.email,
         name: newUser.name,
+        role: newUser.role,
       },
       token,
     });
