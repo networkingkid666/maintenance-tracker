@@ -69,6 +69,49 @@ npm run dev
 
 4. The server will run on `http://localhost:5000`
 
+## Environment Variables
+
+### Frontend Environment Variables
+
+1. Copy the example file:
+```bash
+cd frontend
+cp .env.example .env
+```
+
+2. Configure the following variables in `frontend/.env`:
+- `VITE_BASE_PATH`: Base path for the application (default: `/maintenance-tracker`)
+  - Set to `/` for root domain deployment
+  - Set to `/your-path` for subdirectory deployment
+
+### Backend Environment Variables
+
+1. Copy the example file:
+```bash
+cd backend
+cp .env.example .env
+```
+
+2. Configure the following variables in `backend/.env`:
+- `PORT`: Server port (default: `5000`)
+- `JWT_SECRET`: Secret key for JWT token signing and verification
+  - **IMPORTANT**: Change this to a secure random string in production
+  - Generate a secure key: `openssl rand -base64 32`
+
+### Vercel Deployment
+
+When deploying to Vercel, add these environment variables in your project settings:
+
+**Frontend Environment Variables:**
+- Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+- Add `VITE_BASE_PATH` (if deploying to a subdirectory, otherwise leave empty or set to `/`)
+
+**Backend Environment Variables** (if deploying backend separately):
+- `PORT`: Server port (Vercel will set this automatically)
+- `JWT_SECRET`: Your secure JWT secret key
+
+**Note**: For Vite projects, environment variables must be prefixed with `VITE_` to be accessible in the frontend code.
+
 ## Demo Login
 
 For the demo version (localStorage):
